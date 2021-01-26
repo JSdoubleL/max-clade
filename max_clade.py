@@ -1,7 +1,6 @@
 import treeswift
 import argparse
 import copy
-import types
 
 
 def get_down_clades(tree):
@@ -55,17 +54,15 @@ def get_up_clades(tree):
 
     clades = []
 
-    # Find root node
+    # Find root node, also label rest of nodes 'skip = False'
     for node in tree.traverse_preorder():
         if node.is_root():
             root = node
             root.skip = True
-        #elif node.is_leaf():
-        #    node.skip = True
         else:
             node.skip = False
 
-    # Compute up profiles for children of root
+    # Check children of root
     children_of_root = root.child_nodes()
     root.dup_down = False
     for node in children_of_root:
@@ -84,11 +81,11 @@ def get_up_clades(tree):
                     node.dup_up = True
         if not node.dup_up: 
             clades.append(node)
-    children_of_root = set(children_of_root) # possible junk
+    #children_of_root = set(children_of_root) # possible junk
 
-    # Compute up profiles for remaining nodes
+    # Check remaining nodes
     for node in tree.traverse_preorder():
-        label = node.get_label() # possible junk
+        #label = node.get_label() # possible junk
         if not node.skip:            
             parent = node.get_parent()
             node.dup_up = parent.dup_up
@@ -203,9 +200,15 @@ def trivial(newick_str):
 
 
 def main(args):
+    if args.output is None:
+        split = args.input.rsplit('.', 1)
+        output = split[0] + '-mclades.' + split[1]
+    else:
+        output = args.output
+
     with open(args.input, 'r') as fi:
         #trees = treeswift.read_tree_newick(args.input)
-        with open(args.output, 'w') as fo:
+        with open(output, 'w') as fo:
             for line in fi:
                 tree = treeswift.read_tree_newick(line)
                 max_clades = find_max_clades(tree)
@@ -222,8 +225,8 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-i", "--input", type=str,
-                        help="Input gene tree file", required=True)
+                        help="Input tree list file", required=True)
     parser.add_argument("-o", "--output", type=str,
-                        help="Output max clade list file", required=True)
+                        help="Output max clade list file")
 
     main(parser.parse_args())
