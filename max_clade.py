@@ -180,7 +180,7 @@ def find_max_clades(tree):
 
 def trivial(newick_str):
     """
-    Determines if a newick string represents a trivial tree (tree containing now quartets).
+    Determines if a newick string represents a trivial tree (tree containing no quartets).
 
     Parameters
     ----------
