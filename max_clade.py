@@ -64,12 +64,12 @@ def get_up_clades(tree):
 
     # Check children of root
     children_of_root = root.child_nodes()
-    root.dup_down = False
+    #root.dup_down = False
     for node in children_of_root:
         # check if there's duplications below the root
         # in order to take care of edge case
-        if node.dup_down:
-            root.dup_down = True
+        #if node.dup_down:
+        #    root.dup_down = True
         node.up = set([])
         node.skip = True
         node.dup_up = False
@@ -182,7 +182,7 @@ def find_max_clades(tree):
 
 def trivial(newick_str):
     """
-    Determines if a newick string represents a trivial tree (tree containing now quartets).
+    Determines if a newick string represents a trivial tree (tree containing no quartets).
 
     Parameters
     ----------
@@ -230,3 +230,4 @@ if __name__=="__main__":
                         help="Output max clade list file")
 
     main(parser.parse_args())
+    
