@@ -64,12 +64,7 @@ def get_up_clades(tree):
 
     # Check children of root
     children_of_root = root.child_nodes()
-    #root.dup_down = False
     for node in children_of_root:
-        # check if there's duplications below the root
-        # in order to take care of edge case
-        #if node.dup_down:
-        #    root.dup_down = True
         node.up = set([])
         node.skip = True
         node.dup_up = False
@@ -81,11 +76,9 @@ def get_up_clades(tree):
                     node.dup_up = True
         if not node.dup_up: 
             clades.append(node)
-    #children_of_root = set(children_of_root) # possible junk
 
     # Check remaining nodes
     for node in tree.traverse_preorder():
-        #label = node.get_label() # possible junk
         if not node.skip:            
             parent = node.get_parent()
             node.dup_up = parent.dup_up
@@ -207,7 +200,6 @@ def main(args):
         output = args.output
 
     with open(args.input, 'r') as fi:
-        #trees = treeswift.read_tree_newick(args.input)
         with open(output, 'w') as fo:
             for line in fi:
                 tree = treeswift.read_tree_newick(line)
