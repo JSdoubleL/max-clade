@@ -9,13 +9,19 @@ Extracts maximal clades from a list of unrooted trees. In an unrooted context we
 
 ## Usage
 
-```cmd
-python max_clade -i <input_file> -o <ouput_file>
-```
-
 **Input**: File containing list of trees in newick format
 
 **Output**: Maximal clades listed as trees in newick format
+
+```cmd
+python max_clade.py -i <input_file> -o [optional]<ouput_file>
+```
+
+### Example
+
+```cmd
+python max_clade.py -i example/gtrees-mult.trees
+```
 
 ## Algorithm Description
 
@@ -25,3 +31,5 @@ For each tree in the input do the following:
 - *Postorder traversal:* label each edge with True/False indicating whether there's a duplication event under it (*under* defined with respect to the rooting). Store references to all clades without duplications.
 - *Preorder traversal:* label each edge with True/False indicating whether there's a duplication event above it. Store references to all clades without duplications.
 - Iterate through all duplication free clades. For each one, check all the edges which define a superset clade one layer up. If any of them are duplication free, then considered clade is not maximal, otherwise it is.
+
+NOTE: Currently trivial clades (clades that do not contain a quartet) are filtered out of the output.
