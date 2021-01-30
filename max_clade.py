@@ -205,11 +205,11 @@ def main(args):
                 tree = treeswift.read_tree_newick(line)
                 max_clades = find_max_clades(tree)
                 for c in max_clades:
-                    c.suppress_unifurcations()
                     c.deroot() # return unrooted trees (also needed to make trivial() work)
                     c.is_rooted = False # for some reason deroot() does not do this
+                    c.suppress_unifurcations()
                     newk = c.newick()
-                    if not trivial(newk):
+                    if args.trivial or not trivial(newk):
                         fo.write(newk + '\n')
 
 
@@ -220,6 +220,8 @@ if __name__=="__main__":
                         help="Input tree list file", required=True)
     parser.add_argument("-o", "--output", type=str,
                         help="Output max clade list file")
+    parser.add_argument("-t", "--trivial", action='store_true', 
+                        help="Include trivial clades in output")
 
     main(parser.parse_args())
     
