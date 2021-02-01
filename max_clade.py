@@ -111,15 +111,29 @@ def is_max_clade(node, up):
     """
     if up:
         for child in node.child_nodes():
-            if not child.dup_up and child != node:
+            if not child.dup_up:
                 return False
     else:
-        parent = node.get_parent()        
-        if not parent.is_root() and not parent.get_parent().dup_down:
-            return False
-        for sibl in parent.child_nodes():
-            if not sibl.dup_down and sibl != node:
+        parent = node.get_parent()
+        # if parent is the root, we have to look at clades on other side of root
+        if parent.is_root() and parent.num_children() > 2:
+            print('debug1')
+            for sibl in parent.child_nodes():
+                if not sibl.dup_up and sibl != node:
+                    return False
+        elif parent.is_root():
+            print('debug2')
+            for sibl in parent.child_nodes():
+                if sibl != node:
+                    for child in sibl.child_nodes():
+                        if not child.dup_up:
+                            return False
+        else:
+            if not parent.dup_down:
                 return False
+            for sibl in parent.child_nodes():
+                if not sibl.dup_up and sibl != node:
+                    return False
 
     return True
     
@@ -192,6 +206,26 @@ def trivial(newick_str):
     return True
 
 
+def unroot(tree):
+    """
+    Unroots treeswift tree. Adapted from treeswift 'deroot' function.
+    This one doesn't contract (A,B); to A;
+
+    Parameters
+    ----------
+    tree: treeswift tree
+
+    Returns unrooted treeswift tree
+    """
+    if tree.root.num_children() == 2:
+        [left, right] = tree.root.child_nodes()
+        if not right.is_leaf():
+            right.contract()
+        elif not left.is_leaf():
+            left.contract()
+    tree.is_rooted = False
+    return tree
+
 def main(args):
     if args.output is None:
         split = args.input.rsplit('.', 1)
@@ -203,10 +237,10 @@ def main(args):
         with open(output, 'w') as fo:
             for line in fi:
                 tree = treeswift.read_tree_newick(line)
+                unroot(tree)
                 max_clades = find_max_clades(tree)
                 for c in max_clades:
-                    c.deroot() # return unrooted trees (also needed to make trivial() work)
-                    c.is_rooted = False # for some reason deroot() does not do this
+                    unroot(c)
                     c.suppress_unifurcations()
                     newk = c.newick()
                     if args.trivial or not trivial(newk):
