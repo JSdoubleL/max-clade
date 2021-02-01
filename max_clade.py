@@ -115,20 +115,6 @@ def is_max_clade(node, up):
                 return False
     else:
         parent = node.get_parent()
-        # if parent is the root, we have to look at clades on other side of root
- #       if parent.is_root() and parent.num_children() > 2:
-#            print('debug1')
-#            for sibl in parent.child_nodes():
-#                if not sibl.dup_up and sibl != node:
-#                    return False
-#        elif parent.is_root():
-#            print('debug2')
-#            for sibl in parent.child_nodes():
-#                if sibl != node:
-#                    for child in sibl.child_nodes():
-#                        if not child.dup_up:
-#                            return False
-#        else:
         if not parent.dup_down:
             return False
         for sibl in parent.child_nodes():
