@@ -21,7 +21,8 @@ python max_clade.py -i <input_file> -o <ouput_file> -t
 
 - `-i`: Input tree list file
 - `-o`: (optional) Output max clade list file
-- `-t`: (optional) Include trivial clades in output
+- `-t`: (optional) Include trivial clades in output (filtered by default).
+- `-d`: (optional) Delimiter separating species name from rest of leaf label (default None).
 
 ### Example
 

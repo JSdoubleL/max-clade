@@ -3,7 +3,7 @@ import argparse
 import copy
 
 
-def get_down_clades(tree):
+def get_down_clades(tree, delimiter=None):
     """
     Adapted from script "preproecess_multrees_v3.py" by Erin Molloy 
     https://github.com/ekmolloy/fastmulrfs 
@@ -13,6 +13,7 @@ def get_down_clades(tree):
     Parameters
     ----------
     tree : treeswift tree object
+    delimiter : delimiter separating species name from rest of leaf label
 
     Returns list of vertices coresponding to clades without duplicates
     """
@@ -21,7 +22,7 @@ def get_down_clades(tree):
     for node in tree.traverse_postorder():
         node.dup_down = False
         if node.is_leaf():
-            node.down = set([node.get_label()])
+            node.down = set([node.get_label().split(delimiter)[0]])
         else:
             node.down = set([])
             for child in node.child_nodes():
@@ -29,7 +30,7 @@ def get_down_clades(tree):
                 node.down = node.down.union(child.down)
                 if child.dup_down or len(node.down) < expected_size:
                     node.dup_down = True 
-            # Check for duplications, if not add to list
+            # Only add duplication free clades to output
             if not node.dup_down:
                 clades.append(node)
 
@@ -145,18 +146,19 @@ def node_to_tree(tree, node, up):
         return tree.extract_subtree(node)
 
 
-def find_max_clades(tree):
+def find_max_clades(tree, delimiter=None):
     """
     Find all the max clades in a tree.
 
     Parameters
     ----------
     tree : treeswift tree object
+    delimiter : delimiter separating species name from rest of leaf label
 
     Returns list containing all clades as treeswift tree objects
     """
     max_clades = []
-    down_clades = get_down_clades(tree)
+    down_clades = get_down_clades(tree, delimiter)
     up_clades = get_up_clades(tree)
 
     # if there's no duplication events below the root, then there's no duplications in tree
@@ -224,7 +226,7 @@ def main(args):
             for line in fi:
                 tree = treeswift.read_tree_newick(line)
                 unroot(tree)
-                max_clades = find_max_clades(tree)
+                max_clades = find_max_clades(tree, args.delimiter)
                 for c in max_clades:
                     unroot(c)
                     c.suppress_unifurcations()
@@ -242,6 +244,8 @@ if __name__=="__main__":
                         help="Output max clade list file")
     parser.add_argument("-t", "--trivial", action='store_true', 
                         help="Include trivial clades in output")
+    parser.add_argument('-d', "--delimiter", type=str, 
+                        help="Delimiter separating species name from rest of leaf label.")
 
     main(parser.parse_args())
     
