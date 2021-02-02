@@ -14,7 +14,7 @@ Extracts maximal clades from a list of unrooted trees. In an unrooted context we
 **Output**: Maximal clades listed as trees in newick format
 
 ```
-python max_clade.py -i <input_file> -o <ouput_file> -t
+python max_clade.py -i <input_file> -o <ouput_file> -t -d <delimiter>
 ```
 
 ### Arguments
