@@ -9,7 +9,7 @@ Extracts maximal clades from a list of unrooted trees. In an unrooted context we
 
 ## Usage
 
-**Input**: File containing list of trees in newick format
+**Input**: File containing list of *multi-copy* trees in newick format
 
 **Output**: Maximal clades listed as trees in newick format
 
