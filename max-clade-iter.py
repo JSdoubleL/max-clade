@@ -1,8 +1,5 @@
 import treeswift
 import argparse
-import copy
-from tqdm import tqdm
-
 
 def get_down_clades(tree, delimiter=None):
     """
@@ -264,10 +261,11 @@ def main(args):
     else:
         output = args.output
     
-    num_trees = sum([1 for _ in open(args.input, 'r')])
+    #num_trees = sum([1 for _ in open(args.input, 'r')])
     
     with open(args.input, 'r') as fi, open(output, 'w') as fo:
-        for line in tqdm(fi, total=num_trees):
+        #for line in tqdm(fi, total=num_trees):
+        for line in fi:
             tree = treeswift.read_tree_newick(line)
             out = []
             while True:

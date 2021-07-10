@@ -6,7 +6,6 @@ Extracts maximal clades from a list of unrooted trees. In an unrooted context we
 
 - Python 3
 - [treeswift](https://github.com/niemasd/TreeSwift)
-- tqdm (for iterative max clade)
 
 ## Usage
 
